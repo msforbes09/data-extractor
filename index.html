@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Extraction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        h2 {
+            margin-top: 20px;
+            color: #333;
+        }
+        p {
+            font-size: 16px;
+            color: #444;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data Extraction</h1>
+    <textarea id="textInput" rows="10" cols="50" placeholder="Paste the text here"></textarea>
+    <br>
+    <button onclick="extractData()">Extract Data</button>
+
+    <h2>Extracted Data:</h2>
+    <div id="extractedData"></div>
+
+    <script>
+        function extractData() {
+            var text = document.getElementById('textInput').value;
+
+            // Use regular expressions to extract data
+            var namePattern = /Name:\s*(.*)/;
+            var phonePattern = /Cel no (\d+)/;
+            var addressPattern = /Complete Address:\s*(.*)/;
+            var landmarkPattern = /Landmark:\s*(.*)/;
+
+            var nameMatch = text.match(namePattern);
+            var phoneMatch = text.match(phonePattern);
+            var addressMatch = text.match(addressPattern);
+            var landmarkMatch = text.match(landmarkPattern);
+
+            var extractedDataDiv = document.getElementById('extractedData');
+            extractedDataDiv.innerHTML = '';
+
+            if (nameMatch && phoneMatch && addressMatch && landmarkMatch) {
+                var name = nameMatch[1];
+                var phone = phoneMatch[1];
+                var address = addressMatch[1];
+                var landmark = landmarkMatch[1];
+
+                // Display extracted data and add "Copy" buttons
+                createPropertyWithCopyButton(extractedDataDiv, 'Name: ', name, 'name');
+                createPropertyWithCopyButton(extractedDataDiv, 'Phone number: ', phone, 'phone');
+                createPropertyWithCopyButton(extractedDataDiv, 'Address: ', address, 'address');
+                createPropertyWithCopyButton(extractedDataDiv, 'Landmark: ', landmark, 'landmark');
+            } else {
+                extractedDataDiv.innerHTML = 'Data not found.';
+            }
+        }
+
+        function createPropertyWithCopyButton(container, label, value, propertyId) {
+            var propertyP = document.createElement('p');
+            propertyP.textContent = label;
+
+            var valueSpan = document.createElement('span');
+            valueSpan.textContent = value;
+
+            var copyButton = document.createElement('button');
+            copyButton.textContent = 'Copy';
+            copyButton.onclick = function() {
+                copyToClipboard(value);
+            };
+
+            propertyP.appendChild(valueSpan);
+            propertyP.appendChild(copyButton);
+            container.appendChild(propertyP);
+        }
+
+        function copyToClipboard(value) {
+            var tempInput = document.createElement('input');
+            tempInput.value = value;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+        }
+    </script>
+</body>
+</html>
